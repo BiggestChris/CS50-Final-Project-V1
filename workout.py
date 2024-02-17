@@ -3,48 +3,33 @@ from datetime import datetime
 
 from flask import request
 
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
 from app import db
-
-class Exercise(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    exercise = db.Column(db.String(100), nullable=False)
-    setOne = db.Column(db.Integer)
-    setTwo = db.Column(db.Integer)
-    setThree = db.Column(db.Integer)
-    setFour = db.Column(db.Integer)
-    setFive = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime(timezone=True),
-                           server_default=func.now())
-
-    def __repr__(self):
-        return f'<Exercise {self.exercise}>'
     
 # Help received from ChatGPT refining this function
-def exercise(app):
+def exercise():
+    # TODO: Add Server-side checks on entries
     exercise_name = request.form.get("exercise")
-    set_one = request.form.get("set-one")
+    sets = []
 
-    # Create an instance of Exercise
-    exercise = Exercise(exercise=exercise_name, setOne=set_one)
+    # Loop through all possible sets
+    for i in ["one","two","three","four","five"]:       
+        set_value = request.form.get(f"set-{i}")
+        if set_value:
+            sets.append(int(set_value))
 
-    # Define a list of set fields
-    set_fields = [{'input': 'set-two', 'attribute': 'setTwo'},
-                    {'input': 'set-three', 'attribute': 'setThree'},
-                    {'input': 'set-four', 'attribute': 'setFour'},
-                    {'input': 'set-five', 'attribute': 'setFive'}]
+    # Upload into SQL tables
+    db.execute("INSERT INTO exercise (Exercise, SetOne) VALUES (?, ?)", exercise_name,
+               sets[0])
+    
+    # Get the last inserted row ID (primary key)
+    last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]
 
-    # Loop through the set fields
-    for field in set_fields:
-        # Get the value of the corresponding form field
-        value = request.form.get(field['input'])
-
-        # Check if the value is provided and assign it to the instance
-        if value:
-            # Use setattr() to dynamically set the attribute
-            setattr(exercise, field['attribute'], value)
-
-    # Add the instance to the session and commit changes
-    db.session.add(exercise)
-    db.session.commit()
+    # Upload into SQL tables
+    if sets[1]:
+        db.execute("UPDATE exercise SET SetTwo = ? WHERE ID = ?", sets[1], last_inserted_id)
+    if sets[2]:
+        db.execute("UPDATE exercise SET SetThree = ? WHERE ID = ?", sets[2], last_inserted_id)
+    if sets[3]:
+        db.execute("UPDATE exercise SET SetFour = ? WHERE ID = ?", sets[3], last_inserted_id)
+    if sets[4]:
+        db.execute("UPDATE exercise SET SetFive = ? WHERE ID = ?", sets[4], last_inserted_id)
