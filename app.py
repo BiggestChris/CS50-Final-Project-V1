@@ -12,14 +12,19 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/about/")
-def about():
-    return render_template("about.html")
+@app.route("/workout/")
+def workout():
+    return render_template("workout.html")
 
 
-@app.route("/contact/")
-def contact():
-    return render_template("contact.html")
+@app.route("/food/")
+def food():
+    return render_template("food.html")
+
+
+@app.route("/weight/")
+def weight():
+    return render_template("weight.html")
 
 
 @app.route("/api/data")
