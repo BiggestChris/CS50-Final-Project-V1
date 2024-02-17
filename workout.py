@@ -10,26 +10,25 @@ def exercise():
     # TODO: Add Server-side checks on entries
     exercise_name = request.form.get("exercise")
     sets = []
+    numbers = ["one","two","three","four","five"]
 
     # Loop through all possible sets
-    for i in ["one","two","three","four","five"]:       
+    for i in numbers:       
         set_value = request.form.get(f"set-{i}")
         if set_value:
             sets.append(int(set_value))
 
     # Upload into SQL tables
-    db.execute("INSERT INTO exercise (Exercise, SetOne) VALUES (?, ?)", exercise_name,
-               sets[0])
+    db.execute("INSERT INTO exercise (Exercise) VALUES (?)", exercise_name)
     
     # Get the last inserted row ID (primary key)
-    last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]
+    last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
 
     # Upload into SQL tables
-    if sets[1]:
-        db.execute("UPDATE exercise SET SetTwo = ? WHERE ID = ?", sets[1], last_inserted_id)
-    if sets[2]:
-        db.execute("UPDATE exercise SET SetThree = ? WHERE ID = ?", sets[2], last_inserted_id)
-    if sets[3]:
-        db.execute("UPDATE exercise SET SetFour = ? WHERE ID = ?", sets[3], last_inserted_id)
-    if sets[4]:
-        db.execute("UPDATE exercise SET SetFive = ? WHERE ID = ?", sets[4], last_inserted_id)
+    # TODO: Error deriving from zero-indexing arrays and first numbers being "one" (suspected) - Fix
+    for i in range(len(sets)):
+        try:
+            if sets[i]:
+                db.execute("UPDATE exercise SET ? = ? WHERE ID = ?", f"Set{numbers[i].capitalize()}", sets[i], last_inserted_id)
+        except IndexError:
+            pass
