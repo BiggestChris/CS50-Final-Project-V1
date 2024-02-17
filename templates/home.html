@@ -4,4 +4,22 @@
 {% endblock %}
 {% block content %}
     <p>Home page for the Gym and Fitness app.</p>
+
+    <div class="content">
+        {% for student in students %}
+            <div class="student">
+                <p><b>#{{ student.id }}</b></p>
+                <b>
+                    <p class="name">{{ student.firstname }} {{ student.lastname }}</p>
+                </b>
+                <p>{{ student.email }}</p>
+                <p>{{ student.age }} years old.</p>
+                <p>Joined: {{ student.created_at }}</p>
+                <div class="bio">
+                    <h4>Bio</h4>
+                    <p>{{ student.bio }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

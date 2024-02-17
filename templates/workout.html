@@ -3,5 +3,21 @@
     Workouts
 {% endblock %}
 {% block content %}
+
     <p>Page for recording workout data.</p>
+
+    <form action="/workout" method="post">
+
+        <div class="mb-3">
+            <label for="exercise">Exercise: </label><input class="form-control mx-auto w-auto" name="exercise" type="text">
+            <label for="set-one">Set One: </label><input class="form-control mx-auto w-auto" name="set-one" type="number" min="1">
+            <label for="set-two">Set Two: </label><input class="form-control mx-auto w-auto" name="set-two" type="number">
+            <label for="set-three">Set Three: </label><input class="form-control mx-auto w-auto" name="set-three" type="number">
+            <label for="set-four">Set Four: </label><input class="form-control mx-auto w-auto" name="set-four" type="number">
+            <label for="set-five">Set Five: </label><input class="form-control mx-auto w-auto" name="set-five" type="number">
+        </div>
+        <button class="btn btn-primary" type="submit">Log</button>
+
+    </form>
+
 {% endblock %}
