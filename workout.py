@@ -1,7 +1,9 @@
 import re, os
 from datetime import datetime
+import pandas as pd
 
 from flask import request
+from sqlalchemy import create_engine
 
 from app import db
     
@@ -35,3 +37,21 @@ def exercise():
                 db.execute("UPDATE exercise SET ? = ?, ? = ? WHERE ID = ?", f"Set{numbers[i].capitalize()}_Reps", sets[i], f"Set{numbers[i].capitalize()}_Weight", weights[i], last_inserted_id)
         except IndexError:
             pass
+
+    return "success"
+
+# Help received from ChatGPT refining this function
+def weight_import():
+    # Look for CSV file
+    data = r"C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\Renpho Data\Renpho-Christopher 2024-02-19.csv"
+
+
+    # Read CSV file
+    df = pd.read_csv(data)
+
+    # Transpose CSV file into SQL
+    engine = create_engine("sqlite:///fitness.db")
+    df.to_sql('weight-1', engine, if_exists='replace', index=False)
+    engine.dispose()
+
+    return "success"

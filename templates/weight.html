@@ -4,4 +4,9 @@
 {% endblock %}
 {% block content %}
     <p>Page for uploading weight data.</p>
+
+    <form action="/weight" method="post">
+        <button class="btn btn-primary" type="submit">Upload</button>
+    </form>
+
 {% endblock %}
