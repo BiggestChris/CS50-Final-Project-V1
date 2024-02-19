@@ -8,15 +8,35 @@
 
     <form action="/workout" method="post">
 
-        <div class="mb-3">
-            <label for="exercise">Exercise: </label><input class="form-control mx-auto w-auto" name="exercise" type="text">
-            <label for="set-one">Set One: </label><input class="form-control mx-auto w-auto" name="set-one" type="number" min="1">
-            <label for="set-two">Set Two: </label><input class="form-control mx-auto w-auto" name="set-two" type="number">
-            <label for="set-three">Set Three: </label><input class="form-control mx-auto w-auto" name="set-three" type="number">
-            <label for="set-four">Set Four: </label><input class="form-control mx-auto w-auto" name="set-four" type="number">
-            <label for="set-five">Set Five: </label><input class="form-control mx-auto w-auto" name="set-five" type="number">
+        <div class="mb-3 container">
+            <label><h3>Exercise: </h3><input class="form-control mx-auto w-auto" name="exercise" type="text"></label>
+            <div class="form-group">
+                <h4>Set One</h4>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-one-reps" type="number" min="1"></label>
+            </div>
+            <div class="form-group">
+                <h4>Set Two</h4>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-two-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-two-reps" type="number"></label>
+            </div>
+            <div class="form-group">
+                <h4>Set Three</h4>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-three-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-three-reps" type="number"></label>
+            </div>
+            <div class="form-group">
+                <h4>Set Four</h4>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-four-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-four-reps" type="number"></label>
+            </div>
+            <div class="form-group">
+                <h4>Set Five</h4>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-five-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-five-reps" type="number"></label>
+            </div>
+            <button class="btn btn-primary" type="submit">Log</button>
         </div>
-        <button class="btn btn-primary" type="submit">Log</button>
 
     </form>
 
