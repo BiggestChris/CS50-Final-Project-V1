@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}
+    Export data
+{% endblock %}
+{% block content %}
+<p>Page for exporting data.</p>
+
+<form action="/export" method="post">
+    <button class="btn btn-primary" type="submit">Download Workout</button>
+</form>
+
+{% endblock %}

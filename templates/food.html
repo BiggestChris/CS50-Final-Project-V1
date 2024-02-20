@@ -4,4 +4,10 @@
 {% endblock %}
 {% block content %}
     <p>Page for uploading food consumption data.</p>
+
+    <form action="/food" method="post" enctype = "multipart/form-data">
+        <input type="file" name="food_file">
+        <button class="btn btn-primary" type="submit">Upload</button>
+    </form>
+
 {% endblock %}

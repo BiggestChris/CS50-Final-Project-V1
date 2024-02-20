@@ -43,15 +43,75 @@ def exercise():
 # Help received from ChatGPT refining this function
 def weight_import():
     # Look for CSV file
-    data = r"C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\Renpho Data\Renpho-Christopher 2024-02-19.csv"
+    if 'weight_file' not in request.files:
+        return 'No file part'
+    file = request.files['weight_file']
+    if file.filename == '':
+        return 'No selected file'
+    if file and file.filename.endswith('.csv'):
+        # Process the CSV file
+        pass
+    else:
+        return 'Please upload a CSV file'
 
 
     # Read CSV file
-    df = pd.read_csv(data)
+    if file:
+        df = pd.read_csv(file)
 
     # Transpose CSV file into SQL
+    # TODO: Be able to upload multiple weight files without deleting prior data
     engine = create_engine("sqlite:///fitness.db")
-    df.to_sql('weight-1', engine, if_exists='replace', index=False)
+    df.to_sql('weight', engine, if_exists='replace', index=False)
     engine.dispose()
 
     return "success"
+
+# Taken using weight_import as a template
+def food_import():
+    # Look for CSV file
+    if 'food_file' not in request.files:
+        return 'No file part'
+    file = request.files['food_file']
+    if file.filename == '':
+        return 'No selected file'
+    if file and file.filename.endswith('.csv'):
+        # Process the CSV file
+        pass
+    else:
+        return 'Please upload a CSV file'
+
+
+    # Read CSV file
+    if file:
+        df = pd.read_csv(file)
+
+    # Transpose CSV file into SQL
+    # TODO: Be able to upload multiple weight files without deleting prior data
+    engine = create_engine("sqlite:///fitness.db")
+    df.to_sql('food', engine, if_exists='replace', index=False)
+    engine.dispose()
+
+    return "success"
+
+# Help received from ChatGPT refining this function
+def export():
+    # Retrieve data from SQL table
+    engine = create_engine("sqlite:///fitness.db")
+
+    # TODO: Select tables
+    for var in ['exercise', 'weight', 'food']:
+        sql_query = f"SELECT * FROM {var}"
+        df = pd.read_sql_query(sql_query, engine)
+
+        # Define the file path for the CSV file
+        csv_file_path = f'{var}.csv'
+
+        # Export DataFrame to CSV file
+        df.to_csv(csv_file_path, index=False)
+
+        # Check if the file was created successfully
+        if os.path.exists(csv_file_path):
+            print(f"CSV file '{csv_file_path}' created successfully.")
+        else:
+            print("Failed to create CSV file.")

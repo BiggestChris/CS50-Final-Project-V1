@@ -5,7 +5,8 @@
 {% block content %}
     <p>Page for uploading weight data.</p>
 
-    <form action="/weight" method="post">
+    <form action="/weight" method="post" enctype = "multipart/form-data">
+        <input type="file" name="weight_file">
         <button class="btn btn-primary" type="submit">Upload</button>
     </form>
 

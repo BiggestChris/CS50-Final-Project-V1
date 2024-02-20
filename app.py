@@ -12,7 +12,7 @@ app = Flask(__name__)
 db = SQL("sqlite:///fitness.db")
 
 # Import workout after defining db and app
-from workout import exercise, weight_import
+from workout import exercise, weight_import, food_import, export
 
 
 
@@ -33,9 +33,14 @@ def workout():
 
 
 
-@app.route("/food")
+@app.route("/food", methods=('GET', 'POST'))
 def food():
-    return render_template("food.html")
+    if request.method == 'POST':
+        food_import()
+
+        return redirect("/")
+    else:
+        return render_template("food.html")
 
 
 @app.route("/weight", methods=('GET', 'POST'))
@@ -48,6 +53,11 @@ def weight():
         return render_template("weight.html")
 
 
-@app.route("/api/data")
+@app.route("/export", methods=('GET', 'POST'))
 def get_data():
-    return app.send_static_file("data.json")
+    if request.method == 'POST':
+        export()
+
+        return redirect("/")
+    else:
+        return render_template("export.html")
