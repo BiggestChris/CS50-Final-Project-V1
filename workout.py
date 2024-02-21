@@ -1,6 +1,7 @@
 import re, os
 from datetime import datetime
 import pandas as pd
+import pygsheets
 
 from flask import request
 from sqlalchemy import create_engine
@@ -115,3 +116,28 @@ def export():
             print(f"CSV file '{csv_file_path}' created successfully.")
         else:
             print("Failed to create CSV file.")
+
+        # G-sheets authorisation
+        gc = pygsheets.authorize(service_file='static/g-sheets-for-python-623a90afc224.json')
+
+        # Create empty dataframe
+        df2 = pd.DataFrame()
+
+        # Create a column
+        df2['name'] = ['John', 'Steve', 'Sarah']
+
+        #open the google spreadsheet (where 'PY to Gsheet Test' is the name of my sheet)
+        sh = gc.open_by_key('1F_6EtWT68BO2EfY_dErs-fNKWiEMCj497Hs0MnI-HsY')
+
+        #select the first sheet 
+        wks = sh.worksheet_by_title('Daily Tracker')
+
+        # TODO: Daily Tracker
+            # Read Column C to pick up dates
+            # Need to compare to dates in Weight table
+            # Where they are matching - need to load in the weight into Column D
+            # If multiple entries for one day - pick the earliest time
+
+        # Update the first sheet with df, starting at cell - note (y,x) is format of set_dataframe coordinates.
+        # So wks.set_dataframe(df2,(9,4)) will update cell Row 9, Column D (4))
+        wks.set_dataframe(df2,(9,4))
