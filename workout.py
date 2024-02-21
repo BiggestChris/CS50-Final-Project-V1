@@ -118,7 +118,7 @@ def export():
             print("Failed to create CSV file.")
 
         # G-sheets authorisation
-        gc = pygsheets.authorize(service_file='static/g-sheets-for-python-623a90afc224.json')
+        gc = pygsheets.authorize(service_file='C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
 
         # Create empty dataframe
         df2 = pd.DataFrame()
