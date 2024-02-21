@@ -118,7 +118,9 @@ def export():
             print("Failed to create CSV file.")
 
         # G-sheets authorisation
-        gc = pygsheets.authorize(service_file='C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
+        # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
+            # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
+        gc = pygsheets.authorize(service_file=r'C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
 
         # Create empty dataframe
         df2 = pd.DataFrame()
