@@ -5,8 +5,12 @@
 {% block content %}
 <p>Page for exporting data.</p>
 
-<form action="/export" method="post">
-    <button class="btn btn-primary" type="submit">Download Workout</button>
+<form action="/weight_export" method="post">
+    <button class="btn btn-primary" type="submit">Download Weight data to G-sheet</button>
+</form>
+
+<form action="/food_export" method="post">
+    <button class="btn btn-primary" type="submit">Download Food data to G-sheet</button>
 </form>
 
 {% endblock %}
