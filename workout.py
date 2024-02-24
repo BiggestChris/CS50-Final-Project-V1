@@ -1,7 +1,8 @@
 import re, os
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 import pygsheets
+from openpyxl.utils import get_column_letter
 
 from flask import request
 from sqlalchemy import create_engine
@@ -125,6 +126,7 @@ def weight_export():
         formatted_date = date_object.strftime("%d/%m/%y")
         fresh_dates.append({'date': formatted_date, 'weight': x['Weight(kg)']})
 
+    # TODO: Change it so it loops through all rows in SQL table, rather than dates in G-sheet
     # Where they are matching - need to load in the weight into Column D
     for index, date in enumerate(date_column):
         # Ensure we skip the header row
@@ -177,8 +179,7 @@ def food_export():
     #select the Daily Tracker worksheet 
     wks = sh.worksheet_by_title('Daily Tracker')
 
-    # TODO: Daily Tracker
-        # Read Column C to pick up dates
+    # Read Column C to pick up dates
     date_column = wks.get_col(3)
     # Above creates a list of values in the cells in that column
 
@@ -193,6 +194,7 @@ def food_export():
         formatted_date = date_object.strftime("%d/%m/%y")
         fresh_dates.append({'date': formatted_date, 'calories': x['Calories'], 'protein': x['Protein'], 'carbohydrates': x['Carbohydrates'], 'fat': x['Fat']})
 
+    # TODO: Change it so it loops through all rows in SQL table, rather than dates in G-sheet
     # Where they are matching - need to load in the weight into Column D
     for index, date in enumerate(date_column):
         # Ensure we skip the header row
@@ -233,3 +235,80 @@ def food_export():
 
         else:
             pass
+
+# Based on weight_export function
+def exercise_export():
+
+    # G-sheets authorisation
+    # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
+        # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
+    gc = pygsheets.authorize(service_file=r'C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
+
+    # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)
+    sh = gc.open_by_key('1F_6EtWT68BO2EfY_dErs-fNKWiEMCj497Hs0MnI-HsY')
+
+    #select the Daily Tracker worksheet 
+    wks = sh.worksheet_by_title('Logbook')
+
+    # Go through SQL table - then find where each exercise fits and fill in details
+        # Find what date it is, then relate that to a Week   
+    exercises = db.execute('SELECT Date, Day, Sheet_Order, SetOne_Weight, SetOne_Reps, SetTwo_Weight, SetTwo_Reps, SetThree_Weight, SetThree_Reps, SetFour_Weight, SetFour_Reps FROM new_exercise')
+
+    #ChatGPT helped refine this
+    for exercise in exercises:
+
+        # Find what date it is, then relate that to a Week
+        #ChatGPT helped refine this   
+        exercise_date = datetime.strptime(exercise['Date'], '%Y-%m-%d').date()
+        compare_date = date(2024, 1, 15)
+
+        # Calculate the difference in days
+        difference = (exercise_date - compare_date).days
+        exercise_week = difference // 7 + 1
+
+        
+        # Locate relevant columns for that Week on the G-sheet
+
+        # Read the row from the worksheet
+        row_values = wks.get_row(13)
+
+        # Find the index of the first cell in the row for that Week
+        week_column_index = next((index for index, value in enumerate(row_values) if value == f'WEEK {exercise_week}'), None)
+
+        # If column_index is None, it means an empty cell was found
+        if week_column_index is None:
+            pass
+        
+        else:
+        # Find what workout Day it is in the table, locate relevant set of rows on the G-sheet
+            column_values = wks.get_col(2)
+            day_row_index = next((index for index, value in enumerate(column_values) if value == f'DAY {exercise['Day']}'), None)
+
+        # Then look up workout Order, find where that is in Column B in the relevant set of rows informed by Day
+            if day_row_index is None:
+                pass
+            else:
+                values_to_search = column_values[(day_row_index + 1):(day_row_index + 9)]
+
+                
+                exercise_value_index = next((index for index, value in enumerate(values_to_search) if value == exercise['Sheet_Order']), None)
+
+                if exercise_value_index is None:
+                    pass
+                else:
+                    # New index gives where to look
+                    adjusted_index = day_row_index + exercise_value_index + 1
+
+                    # Look up set 1 load and set 1 reps - put into first two columns in relevant Week columns - remember, get_column_letter isn't zero-indexed
+                    # wks.update_value(f"{get_column_letter(week_column_index + 1)}{adjusted_index + 1}", exercise["SetOne_Weight"])
+                    # wks.update_value(f"{get_column_letter(week_column_index + 2)}{adjusted_index + 1}", exercise["SetOne_Reps"])
+
+                    # Do the same for sets 2,3,4 and second two, third two, fourth two columns of relevant Week columns
+                    for x in [(1,'One'),(2,'Two'),(3,'Three'),(4,'Four')]:
+                        wks.update_value(f"{get_column_letter(week_column_index + (2 * (x[0] - 1)) + 1)}{adjusted_index + 1}", exercise[f"Set{x[1]}_Weight"])
+                        wks.update_value(f"{get_column_letter(week_column_index + (2 * (x[0] - 1)) + 2)}{adjusted_index + 1}", exercise[f"Set{x[1]}_Reps"])
+                    # Repeat for all rows in the SQL table
+
+
+    else:
+        pass
