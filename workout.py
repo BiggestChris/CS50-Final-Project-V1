@@ -255,6 +255,11 @@ def exercise_export():
         # Find what date it is, then relate that to a Week   
     exercises = db.execute('SELECT Date, Day, Sheet_Order, SetOne_Weight, SetOne_Reps, SetTwo_Weight, SetTwo_Reps, SetThree_Weight, SetThree_Reps, SetFour_Weight, SetFour_Reps FROM new_exercise')
 
+    # Read the row and column from the worksheet - calling in here once to limit API Calls
+    row_values = wks.get_row(13)
+    column_values = wks.get_col(2)
+
+
     #ChatGPT helped refine this
     for exercise in exercises:
 
@@ -269,10 +274,6 @@ def exercise_export():
 
         
         # Locate relevant columns for that Week on the G-sheet
-
-        # Read the row from the worksheet
-        row_values = wks.get_row(13)
-
         # Find the index of the first cell in the row for that Week
         week_column_index = next((index for index, value in enumerate(row_values) if value == f'WEEK {exercise_week}'), None)
 
@@ -282,7 +283,6 @@ def exercise_export():
         
         else:
         # Find what workout Day it is in the table, locate relevant set of rows on the G-sheet
-            column_values = wks.get_col(2)
             day_row_index = next((index for index, value in enumerate(column_values) if value == f'DAY {exercise['Day']}'), None)
 
         # Then look up workout Order, find where that is in Column B in the relevant set of rows informed by Day
