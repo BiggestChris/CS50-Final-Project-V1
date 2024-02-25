@@ -9,7 +9,31 @@
     <form action="/workout" method="post">
 
         <div class="mb-3 container">
-            <label><h3>Exercise: </h3><input class="form-control mx-auto w-auto" name="exercise" type="text"></label>
+            <label><h3>Date: </h3>
+                <input class="form-control mx-auto w-auto" type="date" id="date" name="date">
+            </label>
+            <label><h3>Workout day: </h3>
+                <select class="form-control mx-auto w-auto" name="workout-day" id="workout-day">
+                    {% for workout in workout_list %}
+                        <option value={{ workout['Day'] }}>Day {{ workout['Day'] }} - {{ workout['Name'] }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+
+        <div class="mb-3 container">
+
+            <label><h3>Exercise: </h3>
+                <select class="form-control mx-auto w-auto" name="exercise" id="exercise">
+                    <option id="exercise-a" value=""></option>
+                    <option id="exercise-b" value=""></option>
+                    <option id="exercise-c" value=""></option>
+                    <option id="exercise-d" value=""></option>
+                    <option id="exercise-e" value=""></option>
+                    <option id="exercise-f" value=""></option>
+                </select>
+            </label>
+
             <div class="form-group">
                 <h4>Set One</h4>
                 <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" type="text"></label>
@@ -39,5 +63,61 @@
         </div>
 
     </form>
+
+    <script>
+        const WorkoutDay = document.getElementById('workout-day');
+        const Exercise = document.getElementById('exercise');
+        let exerciseArray = []
+        for (let i = 0; i < 6; i++)
+            exerciseArray[i] = document.getElementById(`exercise-${String.fromCharCode(97 + i)}`)
+        const WorkoutList = JSON.parse({{ workout_list_json | tojson | safe }});
+        console.log(WorkoutList);
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Perform any actions you want when the DOM is fully loaded
+            // Example: Call a function to initialize the page
+            const DefaultWorkout = 1;
+            
+            updateExerciseOptions(DefaultWorkout);
+        });
+
+        // Add an event listener for the 'change' event
+        WorkoutDay.addEventListener('change', function(event) {
+            // Get the selected workout value
+            const SelectedWorkout = event.target.value;
+
+            // Perform any actions you want based on the selected workout
+            console.log('Selected workout:', SelectedWorkout);
+
+            // Example: Call a function to update the exercise options
+            updateExerciseOptions(SelectedWorkout);
+        });
+
+        // Function to update exercise options based on the selected workout
+        function updateExerciseOptions(SelectedWorkout) {
+    
+            let exerciselist = [];
+
+            for (let i = 0; i < WorkoutList.length; i++) {
+                if (WorkoutList[i]['Day'] == SelectedWorkout) {
+                    exerciselist = WorkoutList[i]['Exercises'];
+                }
+            };
+
+            let exercises = {}
+            for (let i = 0; i < exerciselist.length; i++) {
+                
+                h = exerciselist[i]["Order"];
+                exercises[h] = exerciselist[i]["Name"];
+            };
+
+            for (let i = 0; i < exerciseArray.length; i++) {
+                exerciseArray[i].value = String.fromCharCode(65 + i)
+                exerciseArray[i].textContent = exercises[String.fromCharCode(65 + i)]
+            }
+        }
+
+    </script>
 
 {% endblock %}

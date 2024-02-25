@@ -3,6 +3,7 @@ from datetime import datetime, date
 import pandas as pd
 import pygsheets
 from openpyxl.utils import get_column_letter
+from workoutobject import workout_list
 
 from flask import request
 from sqlalchemy import create_engine
@@ -12,10 +13,26 @@ from app import db
 # Help received from ChatGPT refining this function
 def exercise():
     # TODO: Add Server-side checks on entries
-    exercise_name = request.form.get("exercise")
+    # exercise_name = request.form.get("exercise")
     weights =[]
     sets = []
     numbers = ["one","two","three","four","five"]
+    day = int(request.form.get("workout-day"))
+    date = request.form.get("date")
+    order = request.form.get("exercise")
+    exercise_name = 'dummy'
+    for workout in workout_list:
+        if workout["Day"] == day:
+            for exercise in workout["Exercises"]:
+                if exercise["Order"] == order:
+                    exercise_name = exercise["Name"]
+                    pass
+                else:
+                    pass
+        else:
+            pass
+    
+
 
     # Loop through all possible sets
     for i in numbers:       
@@ -26,17 +43,16 @@ def exercise():
             weights.append(set_weight)
 
     # Upload into SQL tables
-    db.execute("INSERT INTO exercise (Exercise) VALUES (?)", exercise_name)
+    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date) VALUES (?, ?, ?, ?)", exercise_name, order, day, date)
     
     # Get the last inserted row ID (primary key)
     last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
 
     # Upload into SQL tables
-    # TODO: Error deriving from zero-indexing arrays and first numbers being "one" (suspected) - Fix
     for i in range(len(sets)):
         try:
             if sets[i]:
-                db.execute("UPDATE exercise SET ? = ?, ? = ? WHERE ID = ?", f"Set{numbers[i].capitalize()}_Reps", sets[i], f"Set{numbers[i].capitalize()}_Weight", weights[i], last_inserted_id)
+                db.execute("UPDATE new_exercise SET ? = ?, ? = ? WHERE ID = ?", f"Set{numbers[i].capitalize()}_Reps", sets[i], f"Set{numbers[i].capitalize()}_Weight", weights[i], last_inserted_id)
         except IndexError:
             pass
 

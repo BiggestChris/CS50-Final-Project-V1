@@ -2,6 +2,7 @@ import re, os
 from cs50 import SQL
 from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect
+import json
 
 
 
@@ -13,7 +14,8 @@ db = SQL("sqlite:///fitness.db")
 
 # Import workout after defining db and app
 from workout import exercise, weight_import, food_import, weight_export, food_export, exercise_export
-
+from workoutobject import workout_list
+workout_list_json = json.dumps(workout_list)
 
 
 @app.route("/")
@@ -29,7 +31,7 @@ def workout():
 
         return redirect("/")
     else:
-        return render_template("workout.html")
+        return render_template("workout.html", workout_list=workout_list, workout_list_json=workout_list_json)
 
 
 
