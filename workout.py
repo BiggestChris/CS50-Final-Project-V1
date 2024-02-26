@@ -14,6 +14,7 @@ from app import db
 def exercise():
     # TODO: Add Server-side checks on entries
     # exercise_name = request.form.get("exercise")
+    metric = request.form.get("load-metric")
     weights =[]
     sets = []
     numbers = ["one","two","three","four","five"]
@@ -43,7 +44,7 @@ def exercise():
             weights.append(set_weight)
 
     # Upload into SQL tables
-    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date) VALUES (?, ?, ?, ?)", exercise_name, order, day, date)
+    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date, Metric) VALUES (?, ?, ?, ?, ?)", exercise_name, order, day, date, metric)
     
     # Get the last inserted row ID (primary key)
     last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
@@ -329,3 +330,10 @@ def exercise_export():
 
     else:
         pass
+
+# Need to retrieve latest workouts from SQL and store in an object
+def retrieve_workout():
+
+    # ChatGPT helped with this query
+    last_workout = db.execute('SELECT ne.Day, ne.Sheet_Order, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day, Sheet_Order) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date AND ne.Sheet_Order = max_dates.Sheet_Order;')
+    return last_workout

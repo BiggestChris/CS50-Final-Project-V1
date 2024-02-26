@@ -34,6 +34,15 @@
                 </select>
             </label>
 
+            <label><h3>Load metric: </h3>
+                <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
+                    <option id="metric-one" value="kg">kg</option>
+                    <option id="metric-two" value="lbs">lbs</option>
+                    <option id="metric-three" value="bodyweight">bodyweight</option>
+                    <option id="metric-four" value="other">other</option>
+                </select>
+            </label>
+
             <div class="form-group">
                 <h4>Set One</h4>
                 <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" type="text"></label>
@@ -76,7 +85,6 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             // Perform any actions you want when the DOM is fully loaded
-            // Example: Call a function to initialize the page
             const DefaultWorkout = 1;
             
             updateExerciseOptions(DefaultWorkout);
