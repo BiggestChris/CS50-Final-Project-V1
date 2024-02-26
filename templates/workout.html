@@ -45,28 +45,31 @@
 
             <div class="form-group">
                 <h4>Set One</h4>
-                <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" type="text"></label>
-                <label>Reps: <input class="form-control mx-auto w-auto" name="set-one-reps" type="number" min="1"></label>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" id="set-one-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-one-reps" id="set-one-reps" type="number" min="1"></label>
             </div>
             <div class="form-group">
                 <h4>Set Two</h4>
-                <label>Weight: <input class="form-control mx-auto w-auto" name="set-two-weight" type="text"></label>
-                <label>Reps: <input class="form-control mx-auto w-auto" name="set-two-reps" type="number"></label>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-two-weight" id="set-two-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-two-reps" id="set-two-reps" type="number"></label>
             </div>
             <div class="form-group">
                 <h4>Set Three</h4>
-                <label>Weight: <input class="form-control mx-auto w-auto" name="set-three-weight" type="text"></label>
-                <label>Reps: <input class="form-control mx-auto w-auto" name="set-three-reps" type="number"></label>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-three-weight" id="set-three-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-three-reps" id="set-three-reps" type="number"></label>
             </div>
             <div class="form-group">
                 <h4>Set Four</h4>
-                <label>Weight: <input class="form-control mx-auto w-auto" name="set-four-weight" type="text"></label>
-                <label>Reps: <input class="form-control mx-auto w-auto" name="set-four-reps" type="number"></label>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-four-weight" id="set-four-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-four-reps" id="set-four-reps" type="number"></label>
             </div>
             <div class="form-group">
                 <h4>Set Five</h4>
-                <label>Weight: <input class="form-control mx-auto w-auto" name="set-five-weight" type="text"></label>
-                <label>Reps: <input class="form-control mx-auto w-auto" name="set-five-reps" type="number"></label>
+                <label>Weight: <input class="form-control mx-auto w-auto" name="set-five-weight" id="set-five-weight" type="text"></label>
+                <label>Reps: <input class="form-control mx-auto w-auto" name="set-five-reps" id="set-five-reps" type="number"></label>
+            </div>
+            <div class="form-group">
+                <label><h4>Notes:</h4><textarea class="form-control mx-auto w-auto" name="notes" id="notes" rows="6" cols="60"></textarea></label>
             </div>
             <button class="btn btn-primary" type="submit">Log</button>
         </div>
@@ -76,18 +79,29 @@
     <script>
         const WorkoutDay = document.getElementById('workout-day');
         const Exercise = document.getElementById('exercise');
-        let exerciseArray = []
+        const LastWorkout = JSON.parse({{ last_workout_json | tojson | safe }});
+        let exerciseArray = [];
         for (let i = 0; i < 6; i++)
-            exerciseArray[i] = document.getElementById(`exercise-${String.fromCharCode(97 + i)}`)
+            exerciseArray[i] = document.getElementById(`exercise-${String.fromCharCode(97 + i)}`);
         const WorkoutList = JSON.parse({{ workout_list_json | tojson | safe }});
+        console.log(LastWorkout);
         console.log(WorkoutList);
+        const Numbers = ['one', 'two', 'three', 'four', 'five'];
+        const CapNumbers = ['One', 'Two', 'Three', 'Four', 'Five'];
+        let setsElements = {};
+        for (let i = 0; i < Numbers.length; i++) {
+            setsElements[`${Numbers[i]}-weight`] = document.getElementById(`set-${Numbers[i]}-weight`)
+            setsElements[`${Numbers[i]}-reps`] = document.getElementById(`set-${Numbers[i]}-reps`)
+        }
 
 
         document.addEventListener('DOMContentLoaded', function() {
             // Perform any actions you want when the DOM is fully loaded
             const DefaultWorkout = 1;
+            const DefaultExercise = 'A';
             
             updateExerciseOptions(DefaultWorkout);
+            updateExercisePlaceholders(DefaultExercise);
         });
 
         // Add an event listener for the 'change' event
@@ -100,6 +114,18 @@
 
             // Example: Call a function to update the exercise options
             updateExerciseOptions(SelectedWorkout);
+        });
+
+        // Add an event listener for the 'change' event
+        Exercise.addEventListener('change', function(event) {
+            // Get the selected workout value
+            const SelectedExercise = event.target.value;;
+
+            // Perform any actions you want based on the selected workout
+            console.log('Selected exercise:', SelectedExercise);
+
+            // Example: Call a function to update the exercise options
+            updateExercisePlaceholders(SelectedExercise);
         });
 
         // Function to update exercise options based on the selected workout
@@ -124,6 +150,33 @@
                 exerciseArray[i].value = String.fromCharCode(65 + i)
                 exerciseArray[i].textContent = exercises[String.fromCharCode(65 + i)]
             }
+        }
+
+
+        // Function to update exercise reps and set placeholders based on the selected exercise
+        function updateExercisePlaceholders(SelectedExercise) {
+    
+            let exerciseDetails = {};
+
+            for (let i = 0; i < LastWorkout.length; i++) {
+                if ((LastWorkout[i]['Day'] == WorkoutDay.value) && (LastWorkout[i]['Sheet_Order']) == SelectedExercise) {
+                    for (let j = 0; j < Numbers.length; j++) {
+                        let weight = LastWorkout[i][`Set${CapNumbers[j]}_Weight`];
+                        let reps = LastWorkout[i][`Set${CapNumbers[j]}_Reps`];
+                        if (weight == null) {
+                            setsElements[`${Numbers[j]}-weight`].placeholder = '';
+                        } else {
+                            setsElements[`${Numbers[j]}-weight`].placeholder = weight;
+                        };
+                        if (reps == null) {
+                            setsElements[`${Numbers[j]}-reps`].placeholder = '';
+                        } else {
+                            setsElements[`${Numbers[j]}-reps`].placeholder = reps;
+                        };
+                    }
+                }
+            }
+
         }
 
     </script>

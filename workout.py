@@ -21,6 +21,7 @@ def exercise():
     day = int(request.form.get("workout-day"))
     date = request.form.get("date")
     order = request.form.get("exercise")
+    notes = request.form.get("notes")
     exercise_name = 'dummy'
     for workout in workout_list:
         if workout["Day"] == day:
@@ -44,7 +45,7 @@ def exercise():
             weights.append(set_weight)
 
     # Upload into SQL tables
-    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date, Metric) VALUES (?, ?, ?, ?, ?)", exercise_name, order, day, date, metric)
+    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date, Metric, Notes) VALUES (?, ?, ?, ?, ?, ?)", exercise_name, order, day, date, metric, notes)
     
     # Get the last inserted row ID (primary key)
     last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']

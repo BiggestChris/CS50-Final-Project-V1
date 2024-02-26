@@ -32,8 +32,9 @@ def workout():
         return redirect("/")
     else:
         last_workout = retrieve_workout()
+        last_workout_json = json.dumps(last_workout)
 
-        return render_template("workout.html", workout_list=workout_list, workout_list_json=workout_list_json, last_workout=last_workout)
+        return render_template("workout.html", workout_list=workout_list, workout_list_json=workout_list_json, last_workout_json=last_workout_json)
 
 
 
