@@ -29,7 +29,7 @@ def workout():
     if request.method == 'POST':
         exercise()
 
-        return redirect("/")
+        return redirect("/workout")
     else:
         last_workout = retrieve_workout()
         last_workout_json = json.dumps(last_workout)

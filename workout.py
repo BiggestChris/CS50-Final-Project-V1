@@ -33,7 +33,9 @@ def exercise():
                     pass
         else:
             pass
-    
+    if order not in ['A', 'B', 'C', 'D', 'E', 'F']:
+        exercise_name = order
+        order = 'other'
 
 
     # Loop through all possible sets
@@ -336,5 +338,5 @@ def exercise_export():
 def retrieve_workout():
 
     # ChatGPT helped with this query
-    last_workout = db.execute('SELECT ne.Day, ne.Sheet_Order, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day, Sheet_Order) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date AND ne.Sheet_Order = max_dates.Sheet_Order;')
+    last_workout = db.execute('SELECT ne.Day, ne.Actual_Order, ne.Sheet_Order, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day, Sheet_Order) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date AND ne.Sheet_Order = max_dates.Sheet_Order;')
     return last_workout

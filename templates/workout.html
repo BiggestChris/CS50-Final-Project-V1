@@ -31,8 +31,11 @@
                     <option id="exercise-d" value=""></option>
                     <option id="exercise-e" value=""></option>
                     <option id="exercise-f" value=""></option>
+                    <option id="exercise-other" value ="other">Other</option>
                 </select>
             </label>
+
+            <input class="form-control mx-auto w-auto" type="text" id="other-option-input" placeholder="Enter your exercise">
 
             <label><h3>Load metric: </h3>
                 <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
@@ -88,11 +91,14 @@
         console.log(WorkoutList);
         const Numbers = ['one', 'two', 'three', 'four', 'five'];
         const CapNumbers = ['One', 'Two', 'Three', 'Four', 'Five'];
+        const Letters = ['A', 'B', 'C', 'D', 'E', 'F'];
         let setsElements = {};
         for (let i = 0; i < Numbers.length; i++) {
             setsElements[`${Numbers[i]}-weight`] = document.getElementById(`set-${Numbers[i]}-weight`)
             setsElements[`${Numbers[i]}-reps`] = document.getElementById(`set-${Numbers[i]}-reps`)
         }
+        const ExerciseOther = document.getElementById("exercise-other")
+        const OtherOptionInput = document.getElementById("other-option-input");
 
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -124,8 +130,17 @@
             // Perform any actions you want based on the selected workout
             console.log('Selected exercise:', SelectedExercise);
 
-            // Example: Call a function to update the exercise options
+            // Example: Call a function to update the exercise placeholders
             updateExercisePlaceholders(SelectedExercise);
+        });
+
+        // ChatGPT helped with this event listener
+        OtherOptionInput.addEventListener('input', function() {
+            // Update the value of the selected option to match the input value
+            ExerciseOther.value = OtherOptionInput.value;
+            console.log('Input value is', OtherOptionInput.value);
+            console.log('Option value is', Exercise.value);
+            console.log('Exercise value is', Exercise.value);
         });
 
         // Function to update exercise options based on the selected workout
@@ -157,6 +172,15 @@
         function updateExercisePlaceholders(SelectedExercise) {
     
             let exerciseDetails = {};
+
+            // ChatGPT helped with this function - ensures that Other input is only shown when Other Exercise selected
+            
+            if (!(Letters.includes(SelectedExercise))) {
+                OtherOptionInput.style.display = 'inline-block';
+            } else {
+                OtherOptionInput.style.display = 'none';
+            }
+            
 
             for (let i = 0; i < LastWorkout.length; i++) {
                 if ((LastWorkout[i]['Day'] == WorkoutDay.value) && (LastWorkout[i]['Sheet_Order']) == SelectedExercise) {
