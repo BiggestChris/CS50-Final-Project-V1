@@ -8,44 +8,53 @@
 
     <form action="/workout" method="post">
 
-        <div class="mb-3 container">
-            <label><h3>Date: </h3>
-                <input class="form-control mx-auto w-auto" type="date" id="date" name="date">
-            </label>
-            <label><h3>Workout day: </h3>
-                <select class="form-control mx-auto w-auto" name="workout-day" id="workout-day">
-                    {% for workout in workout_list %}
-                        <option value={{ workout['Day'] }}>Day {{ workout['Day'] }} - {{ workout['Name'] }}</option>
-                    {% endfor %}
-                </select>
-            </label>
+        <div class="mb-3 container d-flex">
+            <div class="mb-3 container">
+                <div class="mb-3 container">
+                    <label><h3>Date: </h3>
+                        <input class="form-control mx-auto w-auto" type="date" id="date" name="date">
+                    </label>
+                    <label><h3>Workout day: </h3>
+                        <select class="form-control mx-auto w-auto" name="workout-day" id="workout-day">
+                            {% for workout in workout_list %}
+                                <option value={{ workout['Day'] }}>Day {{ workout['Day'] }} - {{ workout['Name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+
+                <div class="mb-3 container">
+
+                    <label><h3>Exercise: </h3>
+                        <select class="form-control mx-auto w-auto" name="exercise" id="exercise">
+                            <option id="exercise-a" value=""></option>
+                            <option id="exercise-b" value=""></option>
+                            <option id="exercise-c" value=""></option>
+                            <option id="exercise-d" value=""></option>
+                            <option id="exercise-e" value=""></option>
+                            <option id="exercise-f" value=""></option>
+                            <option id="exercise-other" value ="other">Other</option>
+                        </select>
+                    </label>
+
+                    <input class="form-control mx-auto w-auto" type="text" id="other-option-input" placeholder="Enter your exercise">
+
+                    <label><h3>Load metric: </h3>
+                        <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
+                            <option id="metric-one" value="kg">kg</option>
+                            <option id="metric-two" value="lbs">lbs</option>
+                            <option id="metric-three" value="bodyweight">bodyweight</option>
+                            <option id="metric-four" value="other">other</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="mb-3 container d-flex align-items-center">
+                <p id="previous-workout"></p>
+            </div>
         </div>
-
         <div class="mb-3 container">
-
-            <label><h3>Exercise: </h3>
-                <select class="form-control mx-auto w-auto" name="exercise" id="exercise">
-                    <option id="exercise-a" value=""></option>
-                    <option id="exercise-b" value=""></option>
-                    <option id="exercise-c" value=""></option>
-                    <option id="exercise-d" value=""></option>
-                    <option id="exercise-e" value=""></option>
-                    <option id="exercise-f" value=""></option>
-                    <option id="exercise-other" value ="other">Other</option>
-                </select>
-            </label>
-
-            <input class="form-control mx-auto w-auto" type="text" id="other-option-input" placeholder="Enter your exercise">
-
-            <label><h3>Load metric: </h3>
-                <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
-                    <option id="metric-one" value="kg">kg</option>
-                    <option id="metric-two" value="lbs">lbs</option>
-                    <option id="metric-three" value="bodyweight">bodyweight</option>
-                    <option id="metric-four" value="other">other</option>
-                </select>
-            </label>
-
+            <div class="d-flex">
             <div class="form-group">
                 <h4>Set One</h4>
                 <label>Weight: <input class="form-control mx-auto w-auto" name="set-one-weight" id="set-one-weight" type="text"></label>
@@ -71,6 +80,7 @@
                 <label>Weight: <input class="form-control mx-auto w-auto" name="set-five-weight" id="set-five-weight" type="text"></label>
                 <label>Reps: <input class="form-control mx-auto w-auto" name="set-five-reps" id="set-five-reps" type="number"></label>
             </div>
+            </div>
             <div class="form-group">
                 <label><h4>Notes:</h4><textarea class="form-control mx-auto w-auto" name="notes" id="notes" rows="6" cols="60"></textarea></label>
             </div>
@@ -80,6 +90,7 @@
     </form>
 
     <script>
+        const DateInput = document.getElementById('date');
         const WorkoutDay = document.getElementById('workout-day');
         const Exercise = document.getElementById('exercise');
         const LastWorkout = JSON.parse({{ last_workout_json | tojson | safe }});
@@ -87,7 +98,7 @@
         for (let i = 0; i < 6; i++)
             exerciseArray[i] = document.getElementById(`exercise-${String.fromCharCode(97 + i)}`);
         const WorkoutList = JSON.parse({{ workout_list_json | tojson | safe }});
-        console.log(LastWorkout);
+        console.log('Last Workout is: ', LastWorkout);
         console.log(WorkoutList);
         const Numbers = ['one', 'two', 'three', 'four', 'five'];
         const CapNumbers = ['One', 'Two', 'Three', 'Four', 'Five'];
@@ -99,7 +110,13 @@
         }
         const ExerciseOther = document.getElementById("exercise-other")
         const OtherOptionInput = document.getElementById("other-option-input");
+        const PreviousWorkout = document.getElementById('previous-workout');
 
+
+        // Sort LastWorkout by Day and then by Actual_Order: [Help from ChatGPT and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort]
+        let sortedLastWorkout = LastWorkout;
+        sort_workout_null_number(sortedLastWorkout, 'Actual_Order');
+        sort_workout_null_number(sortedLastWorkout, 'Day');
 
         document.addEventListener('DOMContentLoaded', function() {
             // Perform any actions you want when the DOM is fully loaded
@@ -108,6 +125,27 @@
             
             updateExerciseOptions(DefaultWorkout);
             updateExercisePlaceholders(DefaultExercise);
+
+            
+
+            // From https://www.freecodecamp.org/news/javascript-get-current-date-todays-date-in-js/
+            const date = new Date();
+
+            let day = String(date.getDate());
+            if (day.length == 1) {
+                day = '0' + day;
+            };
+            let month = String(date.getMonth() + 1);
+            if (month.length == 1) {
+                month = '0' + month;
+            }
+            let year = date.getFullYear();
+
+            let currentDate = `${year}-${month}-${day}`;
+
+            DateInput.value = currentDate;
+
+            console.log(currentDate);
         });
 
         // Add an event listener for the 'change' event
@@ -147,6 +185,11 @@
         function updateExerciseOptions(SelectedWorkout) {
     
             let exerciselist = [];
+            let lastWorkoutList = [];
+            let lastWorkoutOrder = [];
+
+            // Clear Previous Workout text content
+            PreviousWorkout.textContent = '';
 
             for (let i = 0; i < WorkoutList.length; i++) {
                 if (WorkoutList[i]['Day'] == SelectedWorkout) {
@@ -156,7 +199,6 @@
 
             let exercises = {}
             for (let i = 0; i < exerciselist.length; i++) {
-                
                 h = exerciselist[i]["Order"];
                 exercises[h] = exerciselist[i]["Name"];
             };
@@ -165,6 +207,39 @@
                 exerciseArray[i].value = String.fromCharCode(65 + i)
                 exerciseArray[i].textContent = exercises[String.fromCharCode(65 + i)]
             }
+
+            for (let i = 0; i < LastWorkout.length; i++) {
+                if (LastWorkout[i]['Day'] == SelectedWorkout) {
+                    lastWorkoutOrder.push(LastWorkout[i]['Actual_Order']);
+                }
+            }
+
+            lastWorkoutOrder.sort();
+
+            testArray = [];
+            trackArray = [0];
+
+            // Track/identify if an 'Order' appears more than once
+            for (let i = 0; i < lastWorkoutOrder.length; i++) {
+                for (let j = (trackArray[i] + 1); j < sortedLastWorkout.length; j++) {
+                    if ((sortedLastWorkout[j]['Day'] == SelectedWorkout) && (sortedLastWorkout[j]['Actual_Order'] == lastWorkoutOrder[i])) {
+                        lastWorkoutList.push(sortedLastWorkout[j]['Exercise']);
+                        testArray.push(sortedLastWorkout[j]['Day']);
+                        trackArray.push(j);
+                        break;
+                    }
+                }
+            }
+
+            for (let i = 0; i < lastWorkoutList.length; i++) {
+                PreviousWorkout.textContent += `Order: ${i}, Exercise: ${lastWorkoutList[i]}\n`;
+            }
+
+            console.log('SelectedWorkout is ', SelectedWorkout);
+            console.log('testArray is: ', testArray);
+            
+            console.log(lastWorkoutOrder);
+            console.log('Last workoutlist is: ', lastWorkoutList);
         }
 
 
@@ -201,6 +276,20 @@
                 }
             }
 
+        }
+
+
+        // Sort WorkoutList by Day and then Actual Order [Help from ChatGPT and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort]
+        function sort_workout_null_number(items, criteria) {
+            items.sort((a, b) => {
+                if (a[criteria] === null && b[criteria] !== null) {
+                    return 1;
+                } else if (a[criteria] !== null && b[criteria] === null) {
+                    return -1;
+                } else {
+                    return a[criteria] - b[criteria];
+                }
+            });
         }
 
     </script>
