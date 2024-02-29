@@ -46,8 +46,19 @@ def exercise():
             sets.append(int(set_value))
             weights.append(set_weight)
 
+    # Work out actual order of exercise entered
+    current_order = 0
+    actual_exercise_order = db.execute("SELECT ne.Day as Day, ne.Actual_Order as Actual_Order, ne.Date as Date FROM new_exercise ne JOIN (SELECT Day, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date;")
+    for exercises in actual_exercise_order:
+        if exercises['Day'] == day:
+            if exercises['Actual_Order'] == None:
+                exercises['Actual_Order'] = 0
+            if current_order <= exercises['Actual_Order']:
+                current_order = exercises['Actual_Order'] + 1
+
+
     # Upload into SQL tables
-    db.execute("INSERT INTO new_exercise (Exercise, Sheet_Order, Day, Date, Metric, Notes) VALUES (?, ?, ?, ?, ?, ?)", exercise_name, order, day, date, metric, notes)
+    db.execute("INSERT INTO new_exercise (Exercise, Actual_Order, Sheet_Order, Day, Date, Metric, Notes) VALUES (?, ?, ?, ?, ?, ?, ?)", exercise_name, current_order, order, day, date, metric, notes)
     
     # Get the last inserted row ID (primary key)
     last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
@@ -337,7 +348,7 @@ def exercise_export():
 # Need to retrieve latest workouts from SQL and store in an object
 def retrieve_workout():
 
-    # ChatGPT helped with this query
+    # ChatGPT helped with this query - Gets workout exercises from last day BEFORE TODAY, assumes user will only use input on day before current day
     last_workout = db.execute('SELECT ne.Day, ne.Actual_Order, ne.Sheet_Order, ne.Exercise, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise WHERE date < DATE(\'now\') GROUP BY Day) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date;')
     # last_workout = db.execute('SELECT ne.Day, ne.Actual_Order, ne.Sheet_Order, ne.Exercise, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date;')
     # last_workout = db.execute('SELECT ne.Day, ne.Actual_Order, ne.Sheet_Order, ne.Exercise, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise GROUP BY Day, Sheet_Order) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date AND ne.Sheet_Order = max_dates.Sheet_Order;')
