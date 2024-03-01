@@ -94,7 +94,7 @@ def weight_import():
 
     # Transpose CSV file into SQL
     # TODO: Be able to upload multiple weight files without deleting prior data
-    engine = create_engine("sqlite:///fitness.db")
+    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
     df.to_sql('weight', engine, if_exists='replace', index=False)
     engine.dispose()
 
@@ -121,7 +121,7 @@ def food_import():
 
     # Transpose CSV file into SQL
     # TODO: Be able to upload multiple weight files without deleting prior data
-    engine = create_engine("sqlite:///fitness.db")
+    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
     df.to_sql('food', engine, if_exists='replace', index=False)
     engine.dispose()
 
