@@ -21,7 +21,7 @@ workout_list_json = json.dumps(workout_list)
 
 # ChatGPT helped with authorisation code
 app.config['BASIC_AUTH_USERNAME'] = 'Chris'
-app.config['BASIC_AUTH_PASSWORD'] = 'Test'
+app.config['BASIC_AUTH_PASSWORD'] = 'Gym5TYL3!'
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
