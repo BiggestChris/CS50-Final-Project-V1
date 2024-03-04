@@ -29,3 +29,16 @@
 #previous-workout {
     white-space: pre-line;
 }
+
+/* Help from ChatGPT in refining this */
+@media (max-width: 768px) {
+    .form-group.d-flex {
+        flex-direction: column;
+    }
+
+    .set {
+        flex: 1 1 100%; /* Full width on smaller screens */
+        margin-right: 0; /* No margin between sets on smaller screens */
+        margin-bottom: 10px; /* Add spacing between sets */
+    }
+}
