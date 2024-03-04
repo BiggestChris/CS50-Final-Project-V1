@@ -8,8 +8,8 @@ from workoutobject import workout_list
 from flask import request
 from sqlalchemy import create_engine
 
-from app import db
-
+from Devapp import db
+    
 # Help received from ChatGPT refining this function
 def exercise():
     # TODO: Add Server-side checks on entries
@@ -39,7 +39,7 @@ def exercise():
 
 
     # Loop through all possible sets
-    for i in numbers:
+    for i in numbers:       
         set_value = request.form.get(f"set-{i}-reps")
         set_weight = request.form.get(f"set-{i}-weight")
         if set_value:
@@ -59,15 +59,15 @@ def exercise():
 
     # Upload into SQL tables
     db.execute("INSERT INTO new_exercise (Exercise, Actual_Order, Sheet_Order, Day, Date, Metric, Notes) VALUES (?, ?, ?, ?, ?, ?, ?)", exercise_name, current_order, order, day, date, metric, notes)
-
+    
     # Get the last inserted row ID (primary key)
-    last_inserted_id = db.execute("SELECT LAST_INSERT_ID()")[0]['LAST_INSERT_ID()']
+    last_inserted_id = db.execute("SELECT last_insert_rowid()")[0]['last_insert_rowid()']
 
     # Upload into SQL tables
     for i in range(len(sets)):
         try:
-            if sets[i]: # Had to insert numbers[i] into below due to MySQL - but these aren't inputted by user so should be safer
-                db.execute(f"UPDATE new_exercise SET Set{numbers[i].capitalize()}_Reps = ?, Set{numbers[i].capitalize()}_Weight = ? WHERE ID = ?", sets[i], weights[i], last_inserted_id)
+            if sets[i]:
+                db.execute("UPDATE new_exercise SET ? = ?, ? = ? WHERE ID = ?", f"Set{numbers[i].capitalize()}_Reps", sets[i], f"Set{numbers[i].capitalize()}_Weight", weights[i], last_inserted_id)
         except IndexError:
             pass
 
@@ -94,7 +94,7 @@ def weight_import():
 
     # Transpose CSV file into SQL
     # TODO: Be able to upload multiple weight files without deleting prior data
-    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+    engine = create_engine("sqlite:///fitness.db")
     df.to_sql('weight', engine, if_exists='replace', index=False)
     engine.dispose()
 
@@ -121,7 +121,7 @@ def food_import():
 
     # Transpose CSV file into SQL
     # TODO: Be able to upload multiple weight files without deleting prior data
-    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+    engine = create_engine("sqlite:///fitness.db")
     df.to_sql('food', engine, if_exists='replace', index=False)
     engine.dispose()
 
@@ -133,12 +133,12 @@ def weight_export():
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
         # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
-    gc = pygsheets.authorize(service_file=r'/home/BiggestChris/Keys/g-sheets-for-python-a3ee6cd4d658.json')
+    gc = pygsheets.authorize(service_file=r'C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
 
     # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)
     sh = gc.open_by_key('1F_6EtWT68BO2EfY_dErs-fNKWiEMCj497Hs0MnI-HsY')
 
-    #select the Daily Tracker worksheet
+    #select the Daily Tracker worksheet 
     wks = sh.worksheet_by_title('Daily Tracker')
 
     # TODO: Daily Tracker
@@ -147,7 +147,7 @@ def weight_export():
     # Above creates a list of values in the cells in that column
 
     # Need to compare to dates in Weight table
-    dates = db.execute('SELECT `Time of Measurement`, `Weight(kg)` FROM weight')
+    dates = db.execute('SELECT [Time of Measurement], [Weight(kg)] FROM weight')
     # Above creates a list of dictionaries, with 'Time of Measurement' and 'Weight(kg)' as the keys in those dictionaries
 
     fresh_dates = []
@@ -187,7 +187,7 @@ def weight_export():
                 extracted_part = extracted_part[:3] + '0' + extracted_part[3:]
 
             # Iterate over fresh_dates to find a matching date
-            for fresh_date in fresh_dates:
+            for fresh_date in fresh_dates:              
                 if extracted_part == fresh_date['date']:
                     # Update the weight in Column D
                     wks.update_value(f"D{index+1}", fresh_date['weight'])
@@ -202,12 +202,12 @@ def food_export():
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
         # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
-    gc = pygsheets.authorize(service_file=r'/home/BiggestChris/Keys/g-sheets-for-python-a3ee6cd4d658.json')
+    gc = pygsheets.authorize(service_file=r'C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
 
     # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)
     sh = gc.open_by_key('1F_6EtWT68BO2EfY_dErs-fNKWiEMCj497Hs0MnI-HsY')
 
-    #select the Daily Tracker worksheet
+    #select the Daily Tracker worksheet 
     wks = sh.worksheet_by_title('Daily Tracker')
 
     # Read Column C to pick up dates
@@ -215,7 +215,7 @@ def food_export():
     # Above creates a list of values in the cells in that column
 
     # Need to compare to dates in Food table
-    dates = db.execute('SELECT Date, SUM(Calories) AS Calories, SUM(`Protein (g)`) AS Protein, SUM(`Carbohydrates (g)`) AS Carbohydrates, SUM(`Fat (g)`) AS Fat  FROM food GROUP BY Date')
+    dates = db.execute('SELECT Date, SUM(Calories) AS Calories, SUM([Protein (g)]) AS Protein, SUM([Carbohydrates (g)]) AS Carbohydrates, SUM([Fat (g)]) AS Fat  FROM food GROUP BY Date')
     # Above creates a list of dictionaries, with 'Date', 'Calories', 'Protein', 'Carbohydrates', 'Fat' as the keys in those dictionaries, which sum up the total of those consumed per day
 
     fresh_dates = []
@@ -255,7 +255,7 @@ def food_export():
                 extracted_part = extracted_part[:3] + '0' + extracted_part[3:]
 
             # Iterate over fresh_dates to find a matching date
-            for fresh_date in fresh_dates:
+            for fresh_date in fresh_dates:              
                 if extracted_part == fresh_date['date']:
                     # Update the weight in Column D
                     wks.update_value(f"F{index+1}", fresh_date['calories'])
@@ -274,16 +274,16 @@ def exercise_export():
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
         # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
-    gc = pygsheets.authorize(service_file=r'/home/BiggestChris/Keys/g-sheets-for-python-a3ee6cd4d658.json')
+    gc = pygsheets.authorize(service_file=r'C:\Users\styli\OneDrive\Documents\Coding\CS50\CS50 - Final Project - Git\GSheets API\g-sheets-for-python-a3ee6cd4d658.json')
 
     # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)
     sh = gc.open_by_key('1F_6EtWT68BO2EfY_dErs-fNKWiEMCj497Hs0MnI-HsY')
 
-    #select the Daily Tracker worksheet
+    #select the Daily Tracker worksheet 
     wks = sh.worksheet_by_title('Logbook')
 
     # Go through SQL table - then find where each exercise fits and fill in details
-        # Find what date it is, then relate that to a Week
+        # Find what date it is, then relate that to a Week   
     exercises = db.execute('SELECT Date, Day, Sheet_Order, SetOne_Weight, SetOne_Reps, SetTwo_Weight, SetTwo_Reps, SetThree_Weight, SetThree_Reps, SetFour_Weight, SetFour_Reps FROM new_exercise')
 
     # Read the row and column from the worksheet - calling in here once to limit API Calls
@@ -295,7 +295,7 @@ def exercise_export():
     for exercise in exercises:
 
         # Find what date it is, then relate that to a Week
-        #ChatGPT helped refine this
+        #ChatGPT helped refine this   
         exercise_date = datetime.strptime(exercise['Date'], '%Y-%m-%d').date()
         compare_date = date(2024, 1, 15)
 
@@ -303,7 +303,7 @@ def exercise_export():
         difference = (exercise_date - compare_date).days
         exercise_week = difference // 7 + 1
 
-
+        
         # Locate relevant columns for that Week on the G-sheet
         # Find the index of the first cell in the row for that Week
         week_column_index = next((index for index, value in enumerate(row_values) if value == f'WEEK {exercise_week}'), None)
@@ -311,7 +311,7 @@ def exercise_export():
         # If column_index is None, it means an empty cell was found
         if week_column_index is None:
             pass
-
+        
         else:
         # Find what workout Day it is in the table, locate relevant set of rows on the G-sheet
             day_row_index = next((index for index, value in enumerate(column_values) if value == f'DAY {exercise["Day"]}'), None)
@@ -322,7 +322,7 @@ def exercise_export():
             else:
                 values_to_search = column_values[(day_row_index + 1):(day_row_index + 9)]
 
-
+                
                 exercise_value_index = next((index for index, value in enumerate(values_to_search) if value == exercise['Sheet_Order']), None)
 
                 if exercise_value_index is None:

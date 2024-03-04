@@ -11,17 +11,17 @@ app = Flask(__name__)
 
 
 # Configure CS50 Library to use SQLite database
-db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+db = SQL("sqlite:///fitness.db")
 
 # Import workout after defining db and app
-from workout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
+from local_dev.Devworkout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
 from workoutobject import workout_list
 workout_list_json = json.dumps(workout_list)
 
 
 # ChatGPT helped with authorisation code
 app.config['BASIC_AUTH_USERNAME'] = 'Chris'
-app.config['BASIC_AUTH_PASSWORD'] = 'Gym5TYL3!'
+app.config['BASIC_AUTH_PASSWORD'] = 'Test'
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
@@ -29,6 +29,7 @@ basic_auth = BasicAuth(app)
 @basic_auth.required
 def basic_auth_check():
     pass  # This function is needed to ensure basic auth is checked for all routes
+
 
 
 @app.route("/")
@@ -84,7 +85,7 @@ def get_data_weight():
         return redirect("/")
     else:
         return render_template("export.html")
-
+    
 @app.route("/food_export", methods=('GET', 'POST'))
 def get_data_food():
     if request.method == 'POST':
@@ -93,7 +94,7 @@ def get_data_food():
         return redirect("/")
     else:
         return render_template("export.html")
-
+    
 @app.route("/exercise_export", methods=('GET', 'POST'))
 def get_data_exercise():
     if request.method == 'POST':
