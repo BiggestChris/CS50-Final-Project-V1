@@ -32,9 +32,15 @@
 
 /* Help from ChatGPT in refining this */
 @media (max-width: 768px) {
-    .form-group.d-flex {
+    .form-group .d-flex {
         flex-direction: column;
     }
+
+    
+    #set-container {
+        width: 100vh;
+    }
+    
 
     .set {
         flex: 1 1 100%; /* Full width on smaller screens */
