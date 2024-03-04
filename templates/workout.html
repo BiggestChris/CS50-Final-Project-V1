@@ -6,55 +6,56 @@
 
     <p>Page for recording workout data.</p>
 
-    <div class="container-fluid">
-    <form action="/workout" method="post">
+    <!-- ChatGPT helped optimise this form for mobile -->
+    <form action="/workout" method="post" class="container">
 
-        <div id="top-container" class="mb-3 container d-flex">
-            <div class="mb-3">
-                <div class="mb-3">
-                    <label><h3>Date: </h3>
-                        <input class="form-control mx-auto w-auto" type="date" id="date" name="date">
-                    </label>
-                    <label><h3>Workout day: </h3>
-                        <select class="form-control mx-auto w-auto" name="workout-day" id="workout-day">
-                            {% for workout in workout_list %}
-                                <option value={{ workout['Day'] }}>Day {{ workout['Day'] }} - {{ workout['Name'] }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-                </div>
-
-                <div class="mb-3">
-
-                    <label><h3>Exercise: </h3>
-                        <select class="form-control mx-auto w-auto" name="exercise" id="exercise">
-                            <option id="exercise-a" value=""></option>
-                            <option id="exercise-b" value=""></option>
-                            <option id="exercise-c" value=""></option>
-                            <option id="exercise-d" value=""></option>
-                            <option id="exercise-e" value=""></option>
-                            <option id="exercise-f" value=""></option>
-                            <option id="exercise-other" value ="other">Other</option>
-                        </select>
-                    </label>
-
-                    <input class="form-control mx-auto w-auto" type="text" id="other-option-input" placeholder="Enter your exercise">
-
-                    <label><h3>Load metric: </h3>
-                        <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
-                            <option id="metric-one" value="kg">kg</option>
-                            <option id="metric-two" value="lbs">lbs</option>
-                            <option id="metric-three" value="bodyweight">bodyweight</option>
-                            <option id="metric-four" value="other">other</option>
-                        </select>
-                    </label>
-                </div>
-            </div>
-            <div class="mb-3 d-flex align-items-center">
-                <p id="previous-workout"></p>
-            </div>
+        <!-- Date and Workout Day -->
+        <div class="mb-3">
+            <label><h3>Date: </h3>
+            <input class="form-control mx-auto w-auto" type="date" id="date" name="date">
+            </label>
         </div>
-        <div id="set-container" class="mb-3 container">
+        <div class="mb-3">
+            <label><h3>Workout day: </h3>
+            <select class="form-control mx-auto w-auto" name="workout-day" id="workout-day">
+                {% for workout in workout_list %}
+                    <option value={{ workout['Day'] }}>Day {{ workout['Day'] }} - {{ workout['Name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <!-- Exercise and Load Metric -->
+        <div class="mb-3">
+            <label><h3>Exercise: </h3>
+                <select class="form-control mx-auto w-auto" name="exercise" id="exercise">
+                    <option id="exercise-a" value=""></option>
+                    <option id="exercise-b" value=""></option>
+                    <option id="exercise-c" value=""></option>
+                    <option id="exercise-d" value=""></option>
+                    <option id="exercise-e" value=""></option>
+                    <option id="exercise-f" value=""></option>
+                    <option id="exercise-other" value ="other">Other</option>
+                </select>
+            </label>
+            <input class="form-control mx-auto w-auto" type="text" id="other-option-input" placeholder="Enter your exercise">
+        </div>
+        <div class="mb-3">
+            <label><h3>Load metric: </h3>
+                <select class="form-control mx-auto w-auto" name="load-metric" id="load-metric">
+                    <option id="metric-one" value="kg">kg</option>
+                    <option id="metric-two" value="lbs">lbs</option>
+                    <option id="metric-three" value="bodyweight">bodyweight</option>
+                    <option id="metric-four" value="other">other</option>
+                </select>
+            </label>
+        </div>
+        <div class="mb-3 d-flex align-items-center">
+            <p id="previous-workout"></p>
+        </div>
+        
+        <!-- Sets and Notes -->
+        <div class="mb-3">
             <div class="row">
                 <div class="col-md">
                     <div class="form-group">
@@ -109,7 +110,6 @@
         </div>
 
     </form>
-    </div>
 
     <script>
         const DateInput = document.getElementById('date');
