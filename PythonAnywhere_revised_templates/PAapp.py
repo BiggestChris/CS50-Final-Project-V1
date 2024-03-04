@@ -3,6 +3,7 @@ from cs50 import SQL
 from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect
 import json
+from flask_basicauth import BasicAuth
 
 
 
@@ -16,6 +17,18 @@ db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywh
 from workout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
 from workoutobject import workout_list
 workout_list_json = json.dumps(workout_list)
+
+
+# ChatGPT helped with authorisation code
+app.config['BASIC_AUTH_USERNAME'] = 'Chris'
+app.config['BASIC_AUTH_PASSWORD'] = 'Test'
+app.config['BASIC_AUTH_FORCE'] = True
+
+basic_auth = BasicAuth(app)
+
+@basic_auth.required
+def basic_auth_check():
+    pass  # This function is needed to ensure basic auth is checked for all routes
 
 
 @app.route("/")
