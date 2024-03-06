@@ -62,7 +62,7 @@ def workout():
         return redirect("/workout")
     else:
         get_database()
-        last_workout = retrieve_workout()
+        last_workout = retrieve_workout(db)
         last_workout_json = json.dumps(last_workout)
         close_database()
 

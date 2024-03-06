@@ -8,7 +8,7 @@ from workoutobject import workout_list
 from flask import request
 from sqlalchemy import create_engine
 
-from app import db
+from Devapp import db
     
 # Help received from ChatGPT refining this function
 def exercise():

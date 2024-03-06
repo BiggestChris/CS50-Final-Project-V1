@@ -14,7 +14,7 @@ app = Flask(__name__)
 db = SQL("sqlite:///fitness.db")
 
 # Import workout after defining db and app
-from workout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
+from local_dev.Devworkout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
 from workoutobject import workout_list
 workout_list_json = json.dumps(workout_list)
 
