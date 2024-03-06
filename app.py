@@ -20,10 +20,10 @@ def get_database():
         db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
     return db
 
+# Unsure if I can explicitly close the connection - but need a way to manage as a placeholder
 def close_database():
     global db
     if db is not None:
-        db.close()
         db = None
     return "Database connection closed"
 
