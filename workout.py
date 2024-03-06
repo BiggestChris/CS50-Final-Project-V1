@@ -12,6 +12,7 @@ from app import db
 
 # Help received from ChatGPT refining this function
 def exercise():
+    global db
     # TODO: Add Server-side checks on entries
     # exercise_name = request.form.get("exercise")
     metric = request.form.get("load-metric")
@@ -75,6 +76,7 @@ def exercise():
 
 # Help received from ChatGPT refining this function
 def weight_import():
+    global db
     # Look for CSV file
     if 'weight_file' not in request.files:
         return 'No file part'
@@ -102,6 +104,7 @@ def weight_import():
 
 # Taken using weight_import as a template
 def food_import():
+    global db
     # Look for CSV file
     if 'food_file' not in request.files:
         return 'No file part'
@@ -129,6 +132,7 @@ def food_import():
 
 # Help received from ChatGPT refining this function
 def weight_export():
+    global db
 
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
@@ -198,6 +202,7 @@ def weight_export():
 
 # Based on weight_export function
 def food_export():
+    global db
 
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
@@ -270,6 +275,7 @@ def food_export():
 # TODO: Refactor so much fewer API Calls made to GoogleSheets - as they get throttled
 # Based on weight_export function
 def exercise_export():
+    global db
 
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
@@ -347,6 +353,7 @@ def exercise_export():
 
 # Need to retrieve latest workouts from SQL and store in an object
 def retrieve_workout():
+    global db
 
     # ChatGPT helped with this query - Gets workout exercises from last day BEFORE TODAY, assumes user will only use input on day before current day
     last_workout = db.execute('SELECT ne.Day, ne.Actual_Order, ne.Sheet_Order, ne.Exercise, ne.SetOne_Weight, ne.SetOne_Reps, ne.SetTwo_Weight, ne.SetTwo_Reps, ne.SetThree_Weight, ne.SetThree_Reps, ne.SetFour_Weight, ne.SetFour_Reps, ne.SetFive_Weight, ne.SetFive_Reps FROM new_exercise ne JOIN (SELECT Day, Sheet_Order, MAX(Date) AS Max_Date FROM new_exercise WHERE date < DATE(NOW()) GROUP BY Day) AS max_dates ON ne.Day = max_dates.Day AND ne.Date = max_dates.Max_Date;')
