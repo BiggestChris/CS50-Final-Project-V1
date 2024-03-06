@@ -9,6 +9,10 @@ from flask_basicauth import BasicAuth
 
 app = Flask(__name__)
 
+# Configure CS50 Library to use MySQL database on PythonAnywhere
+db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+
+
 '''
 # Define the database object globally
 db = None
