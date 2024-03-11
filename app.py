@@ -60,9 +60,9 @@ def home():
 @app.route("/workout", methods=('GET', 'POST'))
 def workout():
     if request.method == 'POST':
-        exercise = exercise()
+        exercise_variable = exercise()
 
-        if exercise == 'ERROR':
+        if exercise_variable == 'ERROR':
             return redirect("/home")
         else:
             return redirect("/workout")
