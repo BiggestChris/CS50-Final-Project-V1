@@ -63,7 +63,7 @@ def workout():
         exercise_variable = exercise()
 
         if exercise_variable == 'ERROR':
-            return redirect("/home")
+            return redirect("/")
         else:
             return redirect("/workout")
     
