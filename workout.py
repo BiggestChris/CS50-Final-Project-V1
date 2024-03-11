@@ -36,6 +36,12 @@ def exercise():
         exercise_name = order
         order = 'other'
 
+    # Server-side checks to ensure Set One values aren't null
+    try:
+        set_one_reps_trial = int(request.form.get(f"set-one-reps"))
+        set_one_weight_trial = int(request.form.get(f"set-one-weight"))
+    except ValueError:
+        return "ERROR"
 
     # Loop through all possible sets
     for i in numbers:

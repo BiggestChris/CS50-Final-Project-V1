@@ -60,9 +60,13 @@ def home():
 @app.route("/workout", methods=('GET', 'POST'))
 def workout():
     if request.method == 'POST':
-        exercise()
+        exercise = exercise()
 
-        return redirect("/workout")
+        if exercise == 'ERROR':
+            return redirect("/home")
+        else:
+            return redirect("/workout")
+    
     else:
         last_workout = retrieve_workout()
         last_workout_json = json.dumps(last_workout)
