@@ -63,7 +63,7 @@ def workout():
         exercise_variable = exercise()
 
         if exercise_variable == 'ERROR':
-            return redirect("/")
+            return redirect("/upload_error")
         else:
             return redirect("/workout")
     
@@ -126,3 +126,7 @@ def get_data_exercise():
         return redirect("/")
     else:
         return render_template("export.html")
+    
+@app.route("/upload_error")
+def upload_error():
+    return render_template("error.html")
