@@ -19,10 +19,15 @@ from workout import exercise, weight_import, food_import, weight_export, food_ex
 from workoutobject import workout_list
 workout_list_json = json.dumps(workout_list)
 
-# IMPORTANT - NEED TO PUT THIS IS ANOTHER FILE
 # ChatGPT helped with authorisation code
-app.config['BASIC_AUTH_USERNAME'] = username
-app.config['BASIC_AUTH_PASSWORD'] = password
+# Load the JSON configuration
+with open('/home/BiggestChris/Keys/flash-auth-keys.json') as config_file:
+    config = json.load(config_file)
+
+# Set the basic authentication credentials
+
+app.config['BASIC_AUTH_USERNAME'] = config['username']
+app.config['BASIC_AUTH_PASSWORD'] = config['password']
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
