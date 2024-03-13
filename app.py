@@ -21,7 +21,7 @@ workout_list_json = json.dumps(workout_list)
 
 # ChatGPT helped with authorisation code
 # Load the JSON configuration
-with open('/home/BiggestChris/Keys/flash-auth-keys.json') as config_file:
+with open(r'/home/BiggestChris/Keys/flash-auth-keys.json') as config_file:
     config = json.load(config_file)
 
 # Set the basic authentication credentials
