@@ -65,6 +65,8 @@ def exercise():
     # Upload into SQL tables
     db.execute("INSERT INTO new_exercise (Exercise, Actual_Order, Sheet_Order, Day, Date, Metric, Notes) VALUES (?, ?, ?, ?, ?, ?, ?)", exercise_name, current_order, order, day, date, metric, notes)
 
+    # TODO: Investigate below two areas as potential source of NULL values - as it may be above row is working but either last_inserted_Id is failing, or sets[] is failing
+
     # Get the last inserted row ID (primary key)
     last_inserted_id = db.execute("SELECT LAST_INSERT_ID()")[0]['LAST_INSERT_ID()']
 
@@ -143,7 +145,7 @@ def weight_export():
 
     # G-sheets authorisation
     # TODO: Need to load in JSON securely - having it in Repo and then uploading publicly created a security risk
-        # json is now moved separately, but file location still in code which is a risk, repo moved to private for now until resolved
+        # json is now secured in PythonAnywhere - should be ok to switch repo back to public
     gc = pygsheets.authorize(service_file=r'/home/BiggestChris/Keys/g-sheets-for-python-a3ee6cd4d658.json')
 
     # Open the google spreadsheet (this has the key from the Greg Burns Fitness Sheet)

@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect
 import json
 from flask_basicauth import BasicAuth
+from auth_details import username, password
 
 
 
@@ -13,35 +14,15 @@ app = Flask(__name__)
 db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
 
 
-'''
-# Define the database object globally
-db = None
-
-# Function to connect to the database only when needed and then close - ChatGPT helped with this, I was receiving timeout errors when the application was open fro more than 5 minutes
-def get_database():
-    global db
-    if db is None:
-        # Configure CS50 Library to use MySQL database on PythonAnywhere
-        db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
-    return db
-
-# Unsure if I can explicitly close the connection - but need a way to manage as a placeholder
-def close_database():
-    global db
-    if db is not None:
-        db = None
-    return "Database connection closed"
-'''
-
 # Import workout after defining db and app
 from workout import exercise, weight_import, food_import, weight_export, food_export, exercise_export, retrieve_workout
 from workoutobject import workout_list
 workout_list_json = json.dumps(workout_list)
 
-
+# IMPORTANT - NEED TO PUT THIS IS ANOTHER FILE
 # ChatGPT helped with authorisation code
-app.config['BASIC_AUTH_USERNAME'] = 'Chris'
-app.config['BASIC_AUTH_PASSWORD'] = 'Gym5TYL3!'
+app.config['BASIC_AUTH_USERNAME'] = username
+app.config['BASIC_AUTH_PASSWORD'] = password
 app.config['BASIC_AUTH_FORCE'] = True
 
 basic_auth = BasicAuth(app)
