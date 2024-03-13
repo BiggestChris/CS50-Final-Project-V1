@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import Flask, render_template, request, url_for, redirect
 import json
 from flask_basicauth import BasicAuth
-from auth_details import username, password
 
 
 
