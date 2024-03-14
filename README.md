@@ -43,8 +43,11 @@ In terms of the architecture:
     - So in practice, I start my workout, select the day and exercise to perform, and it updates my placeholders with the weights and reps I hit last time - so I know that's what I should be aiming for this time as I perform that exercise
 5. In moving this App into Production, it has been deployed on PythonAnywhere, where a MySQL server has been set up and is storing the db files
 
-> [!NOTE]
-> (This project has been a really nice way to capp off CS50, as I've been able to use everything that's been covered by the syllabus excluding coding in C itself)
+> [!NOTE] 
+> This alert uses [!NOTE]
+
+[!NOTE]
+(This project has been a really nice way to capp off CS50, as I've been able to use everything that's been covered by the syllabus excluding coding in C itself)
 
 ### 5) Files and functions
 Walkthrough of the files:
