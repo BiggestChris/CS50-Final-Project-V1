@@ -192,7 +192,7 @@ I intend to keep using this in my day-to-day life going forward, so there are qu
 3. Ability to upload and export portions of new data rather than all the dates given since start of Jan-24
 4. Ability to upload and store cardio data
 5. Data-sorting features - this is currently being done in the G-sheet, but it would be great if more advanced data packages could be used to review all of the above data and draw conclusions
-6. Look at making it available to other users - my PTs other clients for a start - this will involve significant changes in UX and the codebase to make certain parts of it mutable for other G-sheets and methods of recording data
+6. Look at making it available to other users - my PT's other clients for a start - this will involve significant changes in UX and the codebase to make certain parts of it mutable for other G-sheets and methods of recording data
 7. Implement a neater way to move the app between a Dev and Prod environment. As the local Dev environment was SQLite and on my machine it makes things much harder to manage to switch between. The current code is now set for Prod - but it would be good if I could go back to Dev seamlessly, so I would need to implement ways for the code to detect the environment and run different code as a result to resolve this.
 
 ### 8) Credits
