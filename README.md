@@ -1,5 +1,5 @@
 # BC Fitness App
-## Video Demo:  <URL HERE>
+## Video Demo:  <[https://youtu.be/8KjmbRIbc_g](https://youtu.be/8KjmbRIbc_g)>
 ## Description:
 
 ### 1) Summary
