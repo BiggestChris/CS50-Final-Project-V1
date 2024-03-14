@@ -69,6 +69,9 @@ This file then runs through all the relevant routes that can be taken:
 8. get_data_exercise() - same as above but will run exercise_export() and load exercise data into G-sheets
 9. upload_error() - this will render a page that says an upload is failed. Currently only used for the server-side check on NULL entries in Set One of the Workout form
 
+> [!IMPORTANT]
+> On CSV imports: Currently the Food and Weight functionality relies upon importing all of the data ranges that are desired to be in the SQL table, so this needs to be run from 1st Jan 2024 up to the desired date, and best to assume that whenever a new upload is made it will delete the prior data and reupload. (I've not extensively tested this but by always doing this range it's been successful so far.)
+
 #### workout.py:
 All the subfunctions call in the Flask routes are stored here:
 
@@ -88,6 +91,12 @@ This stores the workout_list variable, which is the default workouts set by my P
 
 #### prod folders and local_dev folders:
 These contained archived versions of app.py and workout.py from when I was switching between Local and Prod environment. When building in Local, I used SQLite and a local database in the folder, however for Prod a hosted MySQL database is used, and the code and file references are different as a result. I've kept these folders here just in case I ever recreate the Dev environment or need to go back and forth between Dev and Prod.
+
+#### archived folder:
+This contains files that were used throughout the build - either in testing functionality, in importing starting data, or the Local Dev environment. I have moved here to declutter the root folder.
+
+#### CSV files:
+These are the latest food and weight CSVs that have been uploaded into the app to copy to SQL.
 
 #### templates:
 These house the html templates used to render the pages - using jinja templates and layout.html as the base template.
@@ -184,6 +193,7 @@ I intend to keep using this in my day-to-day life going forward, so there are qu
 4. Ability to upload and store cardio data
 5. Data-sorting features - this is currently being done in the G-sheet, but it would be great if more advanced data packages could be used to review all of the above data and draw conclusions
 6. Look at making it available to other users - my PTs other clients for a start - this will involve significant changes in UX and the codebase to make certain parts of it mutable for other G-sheets and methods of recording data
+7. Implement a neater way to move the app between a Dev and Prod environment. As the local Dev environment was SQLite and on my machine it makes things much harder to manage to switch between. The current code is now set for Prod - but it would be good if I could go back to Dev seamlessly, so I would need to implement ways for the code to detect the environment and run different code as a result to resolve this.
 
 ### 8) Credits
 I've included credit in all relevant parts of the code but just to add here:
