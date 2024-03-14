@@ -7,7 +7,7 @@ from workoutobject import workout_list
 
 from flask import request
 from sqlalchemy import create_engine
-from app import db
+from app import db, sql_keys
 
 # Help received from ChatGPT refining this function
 def exercise():
@@ -103,7 +103,7 @@ def weight_import():
     # TODO: Be able to upload multiple weight files without deleting prior data
     
     
-    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+    engine = create_engine(f"mysql://{sql_keys['username']}:{sql_keys['password']}@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
     df.to_sql('weight', engine, if_exists='replace', index=False)
     engine.dispose()
     
@@ -133,7 +133,7 @@ def food_import():
     # TODO: Be able to upload multiple weight files without deleting prior data
     
     
-    engine = create_engine("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+    engine = create_engine(f"mysql://{sql_keys['username']}:{sql_keys['password']}@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
     df.to_sql('food', engine, if_exists='replace', index=False)
     engine.dispose()
     
