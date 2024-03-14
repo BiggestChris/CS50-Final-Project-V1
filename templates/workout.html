@@ -111,6 +111,7 @@
     </form>
 
     <script>
+        // Load in variables based on elements in the HTML (and the JSONs loaded in from Flask)
         const DateInput = document.getElementById('date');
         const WorkoutDay = document.getElementById('workout-day');
         const Exercise = document.getElementById('exercise');
@@ -140,6 +141,7 @@
         sort_workout_null_number(sortedLastWorkout, 'Day');
         console.log('SortedLastWorkout is: ', sortedLastWorkout);
 
+        // Event listener for default form settings when page loads up first time
         document.addEventListener('DOMContentLoaded', function() {
             // Perform any actions you want when the DOM is fully loaded
             const DefaultWorkout = 1;
@@ -170,7 +172,7 @@
             console.log(currentDate);
         });
 
-        // Add an event listener for the 'change' event
+        // Add an event listener for the 'change' event to WorkoutDay
         WorkoutDay.addEventListener('change', function(event) {
             // Get the selected workout value
             const SelectedWorkout = event.target.value;
@@ -182,7 +184,7 @@
             updateExerciseOptions(SelectedWorkout);
         });
 
-        // Add an event listener for the 'change' event
+        // Add an event listener for the 'change' event to Exercise
         Exercise.addEventListener('change', function(event) {
             // Get the selected workout value
             const SelectedExercise = event.target.value;;

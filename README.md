@@ -1,8 +1,10 @@
-# YOUR PROJECT TITLE
+# BC Fitness App
 ## Video Demo:  <URL HERE>
 ## Description:
 
 ### 1) Summary
+For my final project in CS50 I have created the BC Fitness App.
+
 This application has been created to solve specific pain points that I have with recording my nutrition and fitness data on a daily basis, and then being asked to transcribe that into a specific Google Sheet template by my Personal Trainer (who's also my Brother-in-Law).
 
 ### 2) Problem
@@ -121,14 +123,69 @@ Event listeners -
 6. updateExercisePlaceholders(SelectedExercise) - This pulls the relevant Set Loads and reps from LastWorkout and assigns them as Placeholders for the Workout/Exercise combo currently selected.
 7. sort_workout_null_number(items, criteria) - This is utilised in other functions to sort workouts by Workout Day first, then the order of the exercise performed
 
-#### 6) Known bugs
+### 6) Known bugs
 
+#### Time outs
+**Problem**:
+The app itself has a tendency to time out when uploading data. This is because by hosting the SQL database on PythonAnywhere, it is now subject to a 5-min inactivity timeout that they have on all their servers (to prevent too many open connections).
 
+When building this I used the CS50 SQL module, because I was familiar with it already, but also wanted practice writing out SQL queries (as opposed to using SQLAlchemy). However it's become apparent that in doing so the CS50 module automatically manages opening and closing the connection, whereas I need to be able to open and close the connection manually to manage this.
 
+**Solution**:
+To preserve my original aims when building this I've left the code as is for now, but intend to refactor the codebase at a later stage to manually manage this connection.
 
+**Workaround**:
+- Complete workouts in 5 minutes - The timeout is meant to engage at the 5-minute mark. When performing my workout I aim to have very short rests between sets, and fewer sets anyway, so I should be aiming to complete most exercises within 5 minutes anyway.
+- Refresh the workout page regularly - Refresh the page right before inputting any information (don't put it on in advance, leave then add in data 30 mins later)
+- Refreshing when the timeout is received - and clicking to resubmit the form - In practice, when the timeout is received if the page is then refreshed a pop-up asks if I want to resubmit the form, usually twice, if I press 'Submit' those times then it redirects to Workout and in practice has uploaded what I wanted. (Albeit this is still a tad unreliable)
 
+#### Null workout data
+**Problem**:
+In practice, there have been times where workout set data seems to have uploaded fine, but when I check my SQL table afterwards I see that the actuals Load and Weight values uploaded as NULL.
 
+I am having trouble replicating this bug - it appears to only have come out when running it in a live environment and recording my workouts for real. Current clues are that it has something to do with selecting the 'Other Exercise' function before or after that set, and a server-side check on entering NULL values into the form suggests that it's not from not reading the form properly. Looking over my code, I suspect the error is happening between creating the Workout row in the new_exercise table and updating it with the set data.
 
+**Solution**:
+Because this bug is difficult to replicate, I'm having to do trial-and-error over my workouts and so this is taking a long time to get to the bottom of - which is the key reason why I have struggled to resolve ahead of completing the project.
 
+Intention is to go through the exercise() function code, start inserting debugging checks and printing variables to the DOM, so that I can start testing this over real-life workouts to try and pinpoint what is causing the error to occur.
 
-    
+I will also consider if there's a UX-friendly way to showcase to myself values on workouts completed and submitted thus far that day (currently this doesn't exist), to mitigate the issue by making it clear if I need to resubmit the workout.
+
+**Workaround**:
+Refreshing the page and going off and onto another maybe is having some help, so I try to do that after selecting an 'Other exercise' option. I've had my first day of Weds 13th March where all exercises uploaded correctly as a result of this. But in practice I will still need to keep checking the SQL table and amending afterwards until I can resolve this fully
+
+#### Placeholders and previous workout data
+**Problem**:
+The placeholders of the very top exercise in a workout day don't refresh immediately when a workout day is changed - and on a few occasions the placeholders themselves have looked odd and do not seem to have pulled from the last workout as intended.
+
+**Solution**:
+The updateExercisePlaceholders event listener / function needs to be revised to ensure that it automatically updates the placeholder for the first exercise in a new workout day. And some further tests to see if the bug on pulling incorrect placeholders can be replicated and investigated further.
+
+**Workaround**:
+Selecting a different exercise then going back to the first seems to refresh the placeholders ok.
+
+#### VS Code detects problems with workout.html JavaScript
+**Problem**:
+VS Code gives me errors on my Javascript in workout.html. This doesn't actually cause any notable errors, but I've not been able to deduce why it considers them a problem. When I asked ChatGPT, it just suspects it's something to do with VS Code not correctly interpreting Jinja - given it's the Jinja within JavaScript it may be the interaction of the two that is confusing it.
+
+**Solution**:
+I'd need to do some further investigation as to why it considers them errors - but right now they do not seem to be having any impact on the actual code itself.
+
+**Workaround**:
+Leave as is - the features still seem to work without this resolved.
+
+### 7) Next features to build
+I intend to keep using this in my day-to-day life going forward, so there are quite a long list of features that I want to eventually implement, and I know there'll be many that I realise I need through real-life use of the app. Here's a list of those I'm currently aware will be at the top of the roadmap:
+
+1. Fix the known bugs detailed above
+2. Ability to review workout, nutrition and weight data in the app and amend there, rather than running through an SQL console
+3. Ability to upload and export portions of new data rather than all the dates given since start of Jan-24
+4. Ability to upload and store cardio data
+5. Data-sorting features - this is currently being done in the G-sheet, but it would be great if more advanced data packages could be used to review all of the above data and draw conclusions
+6. Look at making it available to other users - my PTs other clients for a start - this will involve significant changes in UX and the codebase to make certain parts of it mutable for other G-sheets and methods of recording data
+
+### 8) Credits
+I've included credit in all relevant parts of the code but just to add here:
+- CS50 Course (https://cs50.harvard.edu/x/2024/) and David J. Malan -  the lessons utilised from here have been essential in building this program
+- ChatGPT - numerous times ChatGPT has helped refine the code that has been used
