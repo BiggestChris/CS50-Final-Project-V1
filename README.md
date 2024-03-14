@@ -27,8 +27,8 @@ Breaking down the app I've created by functionality there's:
     - The workout plan my PT has prepared is pre-loaded, segmented into different days of the week
     - It has a set order, but can also show me the order I performed my last workout in, and the weights and reps I achieved for each of those exercises in my last workout
     - It allows me to record new exercises as well outside of the set plan
-    > [!NOTE]
-    > The above is because in practice, I can't always get on the equipment I want in the order I want in the gym - there's other people working out and if someone is using the equipment I want I need to be efficient with my time and do another exercise until it's available
+> [!NOTE]
+> The above is because in practice, I can't always get on the equipment I want in the order I want in the gym - there's other people working out and if someone is using the equipment I want I need to be efficient with my time and do another exercise until it's available
     - All of that workout data is recorded into an SQL database
 4. The ability to export Weight/Food/Workout data into the exact cells in the G-sheet where they should go based on date etc.
 5. Keeping the information in the SQL database, so that in the future as I find better ways to query the data then I can act upon it (so there are fields that currently aren't used in the G-sheet being recorded for that purpose)
@@ -42,9 +42,6 @@ In terms of the architecture:
 4. The workout.html page contains JavaScript, this is is so can dynamically update the page as the user moves through the different permutations of workout options to bring up relevant information for the workout they are about to perform
     - So in practice, I start my workout, select the day and exercise to perform, and it updates my placeholders with the weights and reps I hit last time - so I know that's what I should be aiming for this time as I perform that exercise
 5. In moving this App into Production, it has been deployed on PythonAnywhere, where a MySQL server has been set up and is storing the db files
-
-> [!NOTE] 
-> This alert uses [!NOTE]
 
 > [!NOTE]
 > This project has been a really nice way to capp off CS50, as I've been able to use everything that's been covered by the syllabus excluding coding in C itself
