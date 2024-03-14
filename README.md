@@ -27,12 +27,13 @@ Breaking down the app I've created by functionality there's:
     - The workout plan my PT has prepared is pre-loaded, segmented into different days of the week
     - It has a set order, but can also show me the order I performed my last workout in, and the weights and reps I achieved for each of those exercises in my last workout
     - It allows me to record new exercises as well outside of the set plan
-> [!NOTE]
-> The above is because in practice, I can't always get on the equipment I want in the order I want in the gym - there's other people working out and if someone is using the equipment I want I need to be efficient with my time and do another exercise until it's available
     - All of that workout data is recorded into an SQL database
 4. The ability to export Weight/Food/Workout data into the exact cells in the G-sheet where they should go based on date etc.
 5. Keeping the information in the SQL database, so that in the future as I find better ways to query the data then I can act upon it (so there are fields that currently aren't used in the G-sheet being recorded for that purpose)
 6. And the intention is that recording workouts will be done on a mobile (specifically _my_ mobile) so I've optimised that page for mobile, and then the importing and exporting data functions to take place on a computer
+
+> [!NOTE]
+> The above features for logging workouts are because in practice, I can't always get on the equipment I want in the order I want in the gym - there's other people working out and if someone is using the equipment I want I need to be efficient with my time and do another exercise until it's available
 
 ### 4) Architecture
 In terms of the architecture:
@@ -75,9 +76,10 @@ All the subfunctions call in the Flask routes are stored here:
 4. weight_export() - this takes the Weight data in fitness.db and then transposes into the relevant tab in G-sheets. It has to find the relevant data for each weight row (and ensure it takes the first capture for a date), then it reformats the variables so they'll match those used in the G-sheets, and does comparisons to find the relevant dates in G-sheets and load in the weight data into the column
 5. food_export() - is similar, except with this there are multiple columns to load into for the different macronutrient types
 6. exercise_export() - similar to the above two, this is loading new_exercise table data from fitness.db into the G-sheet. Biggest difference here is that the structure of the G-sheet is into weeks rather than days, so there's a bit more cross-referencing to find the right cell to load the data into
+7. retrieve_workout() - this pulls the last workout of each type from fitness.db for loading into workout.html as a JSON (this shows current targets etc. and are loaded in dynamically)
+
 > [!IMPORTANT]
 > On G-sheet imports: Currently all of these are calling the GoogleSheets API to load data into a single cell, after enough calls Google starts throttling calls, so this does take a while to complete. I need to refactor this at some point to load the data from the database into a 'range' and export all of that at once to reduce the number of calls.
-7. retrieve_workout() - this pulls the last workout of each type from fitness.db for loading into workout.html as a JSON (this shows current targets etc. and are loaded in dynamically)
 
 #### workoutobject.py:
 This stores the workout_list variable, which is the default workouts set by my PT. I've loaded these in as a static file as I'm the sole user, but if I ever looked to change workouts regularly or wanted to make available for other users, I'd need to change this so users could load in their own workout plans.
