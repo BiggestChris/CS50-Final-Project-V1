@@ -9,8 +9,13 @@ from flask_basicauth import BasicAuth
 
 app = Flask(__name__)
 
+
+# ChatGPT helped with authorisation code
+# Load the JSON configuration
+with open(r'/home/BiggestChris/Keys/MySQL-keys.json') as sql_file:
+    sql_keys = json.load(sql_file)
 # Configure CS50 Library to use MySQL database on PythonAnywhere
-db = SQL("mysql://BiggestChris:!Xy7nhhHZmdmFyr@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
+db = SQL(f"mysql://{sql_keys['username']}:{sql_keys['password']}@BiggestChris.mysql.eu.pythonanywhere-services.com/BiggestChris$fitness")
 
 
 # Import workout after defining db and app
