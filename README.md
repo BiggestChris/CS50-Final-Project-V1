@@ -46,8 +46,8 @@ In terms of the architecture:
 > [!NOTE] 
 > This alert uses [!NOTE]
 
-[!NOTE]
-(This project has been a really nice way to capp off CS50, as I've been able to use everything that's been covered by the syllabus excluding coding in C itself)
+> [!NOTE]
+> This project has been a really nice way to capp off CS50, as I've been able to use everything that's been covered by the syllabus excluding coding in C itself
 
 ### 5) Files and functions
 Walkthrough of the files:
